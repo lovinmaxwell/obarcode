@@ -10,7 +10,7 @@ frappe.ui.form.on('Barcode Printing', {
 	refresh: function(frm) {
 		frm.add_custom_button(__('Purchase Receipt'), function() {
 			erpnext.utils.map_current_doc({
-				method: "obarcode.obarcode.doctype.barcode_printing.barcode_printing.pr_make_barcode",
+				method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.pr_make_barcode",
 				source_doctype: "Purchase Receipt",
 				target: frm,
 				date_field: "posting_date",
@@ -26,7 +26,7 @@ frappe.ui.form.on('Barcode Printing', {
 
 		frm.add_custom_button(__('Stock Entry'), function() {
 			erpnext.utils.map_current_doc({
-				method: "obarcode.obarcode.doctype.barcode_printing.barcode_printing.se_make_barcode",
+				method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.se_make_barcode",
 				source_doctype: "Stock Entry",
 				target: frm,
 				date_field: "posting_date",
@@ -79,7 +79,7 @@ frappe.ui.form.on('Barcode Printing', {
 				{
 					console.log("HELLO");
 					frappe.call({
-						method: "obarcode.obarcode.doctype.barcode_printing.barcode_printing.search_item_serial_or_batch_or_barcode_number",
+						method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.search_item_serial_or_batch_or_barcode_number",
 						args: {
 							search_value:1,
 							item:d
@@ -114,7 +114,7 @@ frappe.ui.form.on('Barcode Printing', {
 	create_qr: function(frm)
 	{
 		frappe.call({
-			method: "obarcode.obarcode.doctype.barcode_printing.barcode_printing.make_qrcode",
+			method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.make_qrcode",
 			args: {
 				doc:frm.doc,
 				route: frappe.urllib.get_base_url()
