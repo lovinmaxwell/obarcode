@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include obarcode *.css
+recursive-include obarcode *.csv
+recursive-include obarcode *.html
+recursive-include obarcode *.ico
+recursive-include obarcode *.js
+recursive-include obarcode *.json
+recursive-include obarcode *.md
+recursive-include obarcode *.png
+recursive-include obarcode *.py
+recursive-include obarcode *.svg
+recursive-include obarcode *.txt
+recursive-exclude obarcode *.pyc
