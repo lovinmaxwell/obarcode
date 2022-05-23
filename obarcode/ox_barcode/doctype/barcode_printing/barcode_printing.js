@@ -77,7 +77,7 @@ frappe.ui.form.on('Barcode Printing', {
 			{
 				if (d.item_code)
 				{
-					console.log("HELLO");
+					// console.log("HELLO");
 					frappe.call({
 						method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.search_item_serial_or_batch_or_barcode_number",
 						args: {
@@ -95,6 +95,15 @@ frappe.ui.form.on('Barcode Printing', {
 				}
 	
 			})
+	},
+	printer_test: function(frm)
+	{
+		frappe.call({
+			method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.printer_test",
+			callback: function(r) {
+				console.log(r);	
+			}
+		})
 	},
 	show_sku: function(frm) {
 		frm.trigger("show_sku_barcode");
@@ -404,7 +413,7 @@ frappe.ui.form.on('Barcode Generator Items', {
 		frm.events.get_warehouse_details(frm, cdt, cdn);
 	},
 
-	barcode: function(doc, cdt, cdn) {
+	barcode: function(frm, cdt, cdn) {
 		frm.set_value("qr_created",0);
 		frm.set_value("show_sku",0);
 
@@ -422,7 +431,7 @@ frappe.ui.form.on('Barcode Generator Items', {
 		}
 	},
 
-	uom: function(doc, cdt, cdn) {
+	uom: function(frm, cdt, cdn) {
 		var d = locals[cdt][cdn];
 		if(d.uom && d.item_code){
 			return frappe.call({

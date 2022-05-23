@@ -1,0 +1,5 @@
+{
+	"js/obarcode.min.js": [
+		"public/js/JsBarcode.all.min.js"
+	]
+}

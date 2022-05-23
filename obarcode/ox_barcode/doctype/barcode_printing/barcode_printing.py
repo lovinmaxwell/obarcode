@@ -140,6 +140,17 @@ def search_item_serial_or_batch_or_barcode_number(search_value,item):
 
 	return {}
 
+
+@frappe.whitelist()
+def printer_test():
+	import win32com.client
+	o = win32com.client.Dispatch("WScript.Network")
+	prlist = o.EnumPrinterConnections()
+	for pr in prlist:
+		print(pr)
+
+	return prlist
+
 @frappe.whitelist()
 def get_item_details(frm):
 	items = frm.doc.items
