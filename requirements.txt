@@ -1,2 +1,4 @@
 # frappe -- https://github.com/frappe/frappe is installed via 'bench init'
 pycups~=2.0.1
+# pywin32==303
+reportlab~=3.6.9

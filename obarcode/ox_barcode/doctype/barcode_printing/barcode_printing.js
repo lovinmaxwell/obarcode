@@ -98,12 +98,21 @@ frappe.ui.form.on('Barcode Printing', {
 	},
 	printer_test: function(frm)
 	{
+		// frappe.call({
+		// 	method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.printer_test",
+		// 	callback: function(r) {
+		// 		console.log(r);	
+		// 	}
+		// })
+
 		frappe.call({
-			method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.printer_test",
+			doc: frm.doc,
+			method: "printer_test",
+			args: args,
 			callback: function(r) {
-				console.log(r);	
+				console.log(r);
 			}
-		})
+		});
 	},
 	show_sku: function(frm) {
 		frm.trigger("show_sku_barcode");

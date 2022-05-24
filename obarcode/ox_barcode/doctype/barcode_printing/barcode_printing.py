@@ -14,8 +14,13 @@ import base64
 from frappe.integrations.utils import make_get_request, make_post_request, create_request_log
 from frappe.utils import cstr, flt, cint, nowdate, add_days, comma_and, now_datetime, ceil, get_url
 from erpnext.manufacturing.doctype.work_order.work_order import get_item_details
+from PyPDF2 import PdfFileReader, PdfFileWriter
 import requests
 from PIL import Image
+from frappe.utils.file_manager import save_file
+import json
+import random
+import string
 
 
 
@@ -54,6 +59,92 @@ class BarcodePrinting(Document):
 		})
 
 		return ret
+	
+	@frappe.whitelist()
+	def printer_test(self):
+		from PyPDF2 import PdfFileWriter, PdfFileReader
+		from reportlab.pdfgen import canvas
+		from reportlab.pdfbase.ttfonts import TTFont
+		from reportlab.pdfbase import pdfmetrics
+		from reportlab.lib import colors
+		from reportlab.lib.pagesizes import A4
+		from reportlab.lib.units import mm
+		from reportlab.graphics.barcode import code39
+		
+
+		# initializing variables with values
+		fileName = 'sample.pdf'
+		documentTitle = 'sample'
+		title = 'Technology'
+		subTitle = 'The largest thing now!!'
+		textLines = [
+		'Technology makes us aware of',
+		'the world around us.',
+		]
+		image = 'image.jpg'
+
+		# creating a pdf object
+		pdf = canvas.Canvas(fileName)
+
+		# setting the title of the document
+		pdf.setTitle(documentTitle)
+
+		# registering a external font in python
+		pdfmetrics.registerFont(
+		TTFont('abc', 'SakBunderan.ttf')
+		)
+
+		# creating the title by setting it's font 
+		# and putting it on the canvas
+		pdf.setFont('abc', 36)
+		pdf.drawCentredString(300, 770, title)
+
+		# creating the subtitle by setting it's font, 
+		# colour and putting it on the canvas
+		pdf.setFillColorRGB(0, 0, 255)
+		pdf.setFont("Courier-Bold", 24)
+		pdf.drawCentredString(290, 720, subTitle)
+
+		# drawing a line
+		pdf.line(30, 710, 550, 710)
+
+		string = '01234567' # This is the 'barcode'. barcode generation only takes strings..?
+
+		x_var=0
+		y_var=10
+		pdf.setFillColorRGB(0,0,0) # change colours of text here
+		barcode = code39.Extended39(string,barWidth=.5*mm,barHeight=10*mm, checksum=0) # code39 type barcode generation here
+		barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
+		pdf.setFont("Courier", 25) # font type and size0
+		pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+
+		pdf.line(30, 710, 550, 710)
+		# creating a multiline text using 
+		# textline and for loop
+		text = pdf.beginText(40, 680)
+		text.setFont("Courier", 18)
+		text.setFillColor(colors.red)
+		for line in textLines:
+			text.textLine(line)
+		pdf.drawText(text)
+
+		# drawing a image at the 
+		# specified (x.y) position
+		pdf.drawInlineImage(image, 130, 400)
+
+		# saving the pdf
+		pdf.save()
+		
+		
+		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
+		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
+		save_file(file_name, pdf, self.doctype,
+              to_name, is_private=1)
+		
+		pass
+
+def random_string(size=6, chars=string.ascii_uppercase + string.digits):
+	return ''.join(random.choice(chars) for _ in range(size))
 
 @frappe.whitelist()
 def pr_make_barcode(source_name, target_doc=None):
@@ -141,15 +232,18 @@ def search_item_serial_or_batch_or_barcode_number(search_value,item):
 	return {}
 
 
-@frappe.whitelist()
-def printer_test():
-	import win32com.client
-	o = win32com.client.Dispatch("WScript.Network")
-	prlist = o.EnumPrinterConnections()
-	for pr in prlist:
-		print(pr)
+# @frappe.whitelist()
+# def printer_test():
+# 	import win32com.client
+# 	o = win32com.client.Dispatch("WScript.Network")
+# 	prlist = o.EnumPrinterConnections()
+# 	for pr in prlist:
+# 		print(pr)
 
-	return prlist
+# 	return prlist
+
+
+
 
 @frappe.whitelist()
 def get_item_details(frm):
