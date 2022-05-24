@@ -81,7 +81,7 @@ class BarcodePrinting(Document):
 		'Technology makes us aware of',
 		'the world around us.',
 		]
-		image = 'image.jpg'
+		# image = 'image.jpg'
 
 		# creating a pdf object
 		pdf = canvas.Canvas(fileName)
@@ -96,7 +96,7 @@ class BarcodePrinting(Document):
 
 		# creating the title by setting it's font 
 		# and putting it on the canvas
-		pdf.setFont('abc', 36)
+		# pdf.setFont('abc', 36)
 		pdf.drawCentredString(300, 770, title)
 
 		# creating the subtitle by setting it's font, 
@@ -130,7 +130,7 @@ class BarcodePrinting(Document):
 
 		# drawing a image at the 
 		# specified (x.y) position
-		pdf.drawInlineImage(image, 130, 400)
+		# pdf.drawInlineImage(image, 130, 400)
 
 		# saving the pdf
 		pdf.save()
@@ -138,7 +138,7 @@ class BarcodePrinting(Document):
 		
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, pdf, self.doctype,
+		save_file(file_name, pdf.getpdfdata(), self.doctype,
               to_name, is_private=1)
 		
 		pass
