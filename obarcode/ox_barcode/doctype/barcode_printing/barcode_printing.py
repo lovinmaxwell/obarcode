@@ -84,7 +84,7 @@ class BarcodePrinting(Document):
 		# image = 'image.jpg'
 
 		# creating a pdf object
-		pdf = canvas.Canvas(fileName)
+		pdf = canvas.Canvas(fileName,pagesize=(25*mm,36*mm))
 		string = '01234567' # This is the 'barcode'. barcode generation only takes strings..?
 
 		x_var=0
@@ -100,7 +100,7 @@ class BarcodePrinting(Document):
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, pdf.getpdfdata(), self.doctype,
-              to_name, is_private=1)
+              self.name, is_private=1)
 		
 		pass
 
