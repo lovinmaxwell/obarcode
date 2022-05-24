@@ -90,9 +90,9 @@ class BarcodePrinting(Document):
 		pdf.setTitle(documentTitle)
 
 		# registering a external font in python
-		pdfmetrics.registerFont(
-		TTFont('abc', 'SakBunderan.ttf')
-		)
+		# pdfmetrics.registerFont(
+		# TTFont('abc', 'SakBunderan.ttf')
+		# )
 
 		# creating the title by setting it's font 
 		# and putting it on the canvas

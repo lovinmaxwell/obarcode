@@ -108,7 +108,6 @@ frappe.ui.form.on('Barcode Printing', {
 		frappe.call({
 			doc: frm.doc,
 			method: "printer_test",
-			args: args,
 			callback: function(r) {
 				console.log(r);
 			}
