@@ -85,29 +85,6 @@ class BarcodePrinting(Document):
 
 		# creating a pdf object
 		pdf = canvas.Canvas(fileName)
-
-		# setting the title of the document
-		pdf.setTitle(documentTitle)
-
-		# registering a external font in python
-		# pdfmetrics.registerFont(
-		# TTFont('abc', 'SakBunderan.ttf')
-		# )
-
-		# creating the title by setting it's font 
-		# and putting it on the canvas
-		# pdf.setFont('abc', 36)
-		pdf.drawCentredString(300, 770, title)
-
-		# creating the subtitle by setting it's font, 
-		# colour and putting it on the canvas
-		pdf.setFillColorRGB(0, 0, 255)
-		pdf.setFont("Courier-Bold", 24)
-		pdf.drawCentredString(290, 720, subTitle)
-
-		# drawing a line
-		pdf.line(30, 710, 550, 710)
-
 		string = '01234567' # This is the 'barcode'. barcode generation only takes strings..?
 
 		x_var=0
@@ -117,28 +94,6 @@ class BarcodePrinting(Document):
 		barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
 		pdf.setFont("Courier", 25) # font type and size0
 		pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-
-		# string = '978020137962' # This is the 'barcode'. barcode generation only takes strings..?
-		# barcode = code128.Code128(string)
-		# barcode.drawOn(pdf, x_var*mm , y_var*mm)
-		# pdf.setFont("Courier", 25) # font type and size0
-		# pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-
-		pdf.line(30, 710, 550, 710)
-		# creating a multiline text using 
-		# textline and for loop
-		text = pdf.beginText(40, 680)
-		text.setFont("Courier", 18)
-		text.setFillColor(colors.red)
-		for line in textLines:
-			text.textLine(line)
-		pdf.drawText(text)
-
-		# drawing a image at the 
-		# specified (x.y) position
-		# pdf.drawInlineImage(image, 130, 400)
-
-		# saving the pdf
 		pdf.save()
 		
 		
