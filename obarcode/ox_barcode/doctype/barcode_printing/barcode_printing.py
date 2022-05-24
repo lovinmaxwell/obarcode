@@ -69,7 +69,7 @@ class BarcodePrinting(Document):
 		from reportlab.lib import colors
 		from reportlab.lib.pagesizes import A4
 		from reportlab.lib.units import mm
-		from reportlab.graphics.barcode import code39
+		from reportlab.graphics.barcode import code39,code128
 		
 
 		# initializing variables with values
@@ -117,6 +117,12 @@ class BarcodePrinting(Document):
 		barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
 		pdf.setFont("Courier", 25) # font type and size0
 		pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+
+		# string = '978020137962' # This is the 'barcode'. barcode generation only takes strings..?
+		# barcode = code128.Code128(string)
+		# barcode.drawOn(pdf, x_var*mm , y_var*mm)
+		# pdf.setFont("Courier", 25) # font type and size0
+		# pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 
 		pdf.line(30, 710, 550, 710)
 		# creating a multiline text using 
