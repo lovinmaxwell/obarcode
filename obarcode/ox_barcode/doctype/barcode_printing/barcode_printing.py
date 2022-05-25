@@ -147,7 +147,7 @@ class BarcodePrinting(Document):
 			# height = bounds[3] - bounds[1]
 			d = Drawing(width=50*mm, height=15*mm)
 			d.add(barcode_eanbc13)
-			d.drawOn(pdf, 0, 0)
+			d.drawOn(pdf, 10, -10)
 			# renderPDF.draw(d, pdf, 10 , -10)			
 			pdf.setFont("Courier", 12)
 			pdf.drawString(10, 30, item.item_name)
