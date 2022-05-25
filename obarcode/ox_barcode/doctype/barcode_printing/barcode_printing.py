@@ -141,15 +141,15 @@ class BarcodePrinting(Document):
 			x_var=10
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
-			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=15*mm,barWidth=35*mm)
+			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=20*mm)
 			# bounds = barcode_eanbc13.getBounds()
 			# width = bounds[2] - bounds[0]
 			# height = bounds[3] - bounds[1]
-			d = Drawing(width=50, height=15)
+			d = Drawing(50*mm,25*mm)
 			d.add(barcode_eanbc13)
-			d.drawOn(pdf, 10, -10)
+			d.drawOn(pdf, 10, 10)
 			# renderPDF.draw(d, pdf, 10 , -10)			
-			pdf.setFont("Courier", 9)
+			pdf.setFont("Courier", 8)
 			pdf.drawString(10, 30, item.item_name)
 			pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
