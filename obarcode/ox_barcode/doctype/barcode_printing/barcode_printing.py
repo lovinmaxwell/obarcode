@@ -70,6 +70,8 @@ class BarcodePrinting(Document):
 		from reportlab.lib.pagesizes import A4
 		from reportlab.lib.units import mm
 		from reportlab.graphics.barcode import eanbc,code39,code128
+		from reportlab.graphics import renderPDF
+		from reportlab.graphics.shapes import Drawing 
 		
 		merger = PdfFileMerger()
 		# initializing variables with values
@@ -95,9 +97,9 @@ class BarcodePrinting(Document):
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
 		
-		merger.write('new.pdf')
+		# merger.write('new.pdf')
 		
-		merger = PdfFileMerger()
+		# merger = PdfFileMerger()
 		# initializing variables with values
 		fileName = 'sample2.pdf'
 		# image = 'image.jpg'
@@ -111,24 +113,6 @@ class BarcodePrinting(Document):
 			initial_width = .1
 
 			barcode128 = code128.Code128(string, humanReadable=True)
-			# # creates the barcode, computes the total size
-			# barcode128._calculate()
-			# # the quiet space before and after the barcode
-			# quiet = barcode128.lquiet + barcode128.rquiet
-			# # total_wid = barWidth*charWid + quiet_space
-			# # char_wid = (total_width - quiet) / bar_width
-			# char_width = (barcode128._width - quiet) / barcode128.barWidth
-			# # now that we have the char width we can calculate the bar width
-			# bar_width = (final_size - quiet) / char_width
-			# # set the new bar width
-			# barcode128.barWidth = bar_width
-			# # re-calculate
-			# barcode128._calculate()
-
-			# # draw the barcode on the canvas
-			# wid, hgt = barcode128._width, barcode128._height
-			# x_pos = y_pos = final_size # arbitrary
-
 			x_var=0
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
@@ -142,9 +126,9 @@ class BarcodePrinting(Document):
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
 		
-		merger.write('new1.pdf')
+		# merger.write('new1.pdf')
 
-		merger = PdfFileMerger()
+		# merger = PdfFileMerger()
 		# initializing variables with values
 		fileName = 'sample3.pdf'
 		# image = 'image.jpg'
@@ -153,12 +137,14 @@ class BarcodePrinting(Document):
 			# creating a pdf object
 			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
 			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
-			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string)
 
 			x_var=0
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
-			barcode_eanbc13.drawOn(pdf, x_var*mm , y_var*mm)
+			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(barcode_eanbc13)
+			d = Drawing(50, 10)
+			d.add(barcode_eanbc13)
+			renderPDF.draw(d, pdf, x_var*mm , y_var*mm)
 			# barcode128.drawOn(pdf, x_pos, y_pos)
 			
 			pdf.setFont("Courier", 12)
@@ -168,22 +154,22 @@ class BarcodePrinting(Document):
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
 		
-		merger.write('new3.pdf')
+		merger.write('new1.pdf')
 
 		f1 = open('new.pdf', 'rb')
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
 
-		f2 = open('new1.pdf', 'rb')
-		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
-		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, f2.read(), self.doctype,self.name, is_private=1)
+		# f2 = open('new1.pdf', 'rb')
+		# to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
+		# file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
+		# save_file(file_name, f2.read(), self.doctype,self.name, is_private=1)
 
-		f3 = open('new3.pdf', 'rb')
-		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
-		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, f3.read(), self.doctype,self.name, is_private=1)
+		# f3 = open('new3.pdf', 'rb')
+		# to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
+		# file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
+		# save_file(file_name, f3.read(), self.doctype,self.name, is_private=1)
 		
 		pass
 
