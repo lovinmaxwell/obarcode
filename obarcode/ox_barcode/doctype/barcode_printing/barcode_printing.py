@@ -147,7 +147,7 @@ class BarcodePrinting(Document):
 			# height = bounds[3] - bounds[1]
 			d = Drawing(10,20)
 			d.add(barcode_eanbc13)
-			renderPDF.draw(d, pdf, 10 , 10)			
+			renderPDF.draw(d, pdf, 10 , -10)			
 			pdf.setFont("Courier", 12)
 			pdf.drawString(10, 30, item.item_name)
 			pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
