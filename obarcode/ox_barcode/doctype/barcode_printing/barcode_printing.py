@@ -90,7 +90,7 @@ class BarcodePrinting(Document):
 			pdf.setFont("Courier", 12)
 			pdf.drawString(0, 15, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.setFont("Courier", 16)
-			pdf.drawString(0, 0, item.rate) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawString(0, 0, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
