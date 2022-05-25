@@ -96,11 +96,7 @@ class BarcodePrinting(Document):
 			merger.append(f1)
 		
 		merger.write('new.pdf')
-		f1 = open('new.pdf', 'rb')
-		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
-		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, f1, self.doctype,
-              self.name, is_private=1)
+		
 
 		for item in self.items:
 			# creating a pdf object
@@ -139,10 +135,16 @@ class BarcodePrinting(Document):
 			merger.append(f1)
 		
 		merger.write('new1.pdf')
-		f1 = open('new1.pdf', 'rb')
+
+		f1 = open('new.pdf', 'rb')
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, f1, self.doctype,self.name, is_private=1)
+		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
+
+		f2 = open('new1.pdf', 'rb')
+		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
+		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
+		save_file(file_name, f2.read(), self.doctype,self.name, is_private=1)
 		
 		pass
 
