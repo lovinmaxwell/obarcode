@@ -71,7 +71,7 @@ class BarcodePrinting(Document):
 		from reportlab.lib.units import mm
 		from reportlab.graphics.barcode import code39,code128
 		
-		merger = PdfFileMerger()
+		merger = PdfFileWriter()
 		# initializing variables with values
 		fileName = 'sample.pdf'
 		# image = 'image.jpg'
