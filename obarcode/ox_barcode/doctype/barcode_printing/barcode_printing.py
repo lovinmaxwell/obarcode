@@ -152,7 +152,7 @@ class BarcodePrinting(Document):
 			pdf.setFont("Courier-Bold", 8)
 			pdf.drawCentredString(50*mm/2, 10, item.item_name)
 			pdf.rotate(90)
-			pdf.drawString(10, -80, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawString(20, -80, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
