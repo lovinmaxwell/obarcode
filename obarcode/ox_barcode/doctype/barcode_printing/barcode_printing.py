@@ -62,7 +62,7 @@ class BarcodePrinting(Document):
 	
 	@frappe.whitelist()
 	def printer_test(self):
-		from PyPDF2 import PdfFileWriter, PdfFileReader
+		from PyPDF2 import PdfFileWriter, PdfFileReader,PdfFileMerger
 		from reportlab.pdfgen import canvas
 		from reportlab.pdfbase.ttfonts import TTFont
 		from reportlab.pdfbase import pdfmetrics
@@ -71,35 +71,28 @@ class BarcodePrinting(Document):
 		from reportlab.lib.units import mm
 		from reportlab.graphics.barcode import code39,code128
 		
-
+		merger = PdfFileMerger()
 		# initializing variables with values
 		fileName = 'sample.pdf'
-		documentTitle = 'sample'
-		title = 'Technology'
-		subTitle = 'The largest thing now!!'
-		textLines = [
-		'Technology makes us aware of',
-		'the world around us.',
-		]
 		# image = 'image.jpg'
+		for item in self.items:
+			# creating a pdf object
+			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
+			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
 
-		# creating a pdf object
-		pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
-		string = '01234567' # This is the 'barcode'. barcode generation only takes strings..?
-
-		x_var=0
-		y_var=10
-		pdf.setFillColorRGB(0,0,0) # change colours of text here
-		barcode = code39.Extended39(string) # code39 type barcode generation here
-		barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
-		pdf.setFont("Courier", 25) # font type and size0
-		pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-		pdf.save()
-		
+			x_var=0
+			y_var=10
+			pdf.setFillColorRGB(0,0,0) # change colours of text here
+			barcode = code39.Extended39(string) # code39 type barcode generation here
+			barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
+			pdf.setFont("Courier", 25) # font type and size0
+			pdf.drawString(0, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			# pdf.save()
+			merger.addPage(pdf)
 		
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, pdf.getpdfdata(), self.doctype,
+		save_file(file_name, merger, self.doctype,
               self.name, is_private=1)
 		
 		pass
