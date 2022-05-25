@@ -84,7 +84,7 @@ class BarcodePrinting(Document):
 		# image = 'image.jpg'
 
 		# creating a pdf object
-		pdf = canvas.Canvas(fileName,pagesize=(100*mm,150*mm))
+		pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
 		string = '01234567' # This is the 'barcode'. barcode generation only takes strings..?
 
 		x_var=0
