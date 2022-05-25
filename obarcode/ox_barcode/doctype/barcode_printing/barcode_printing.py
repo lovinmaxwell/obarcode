@@ -86,13 +86,13 @@ class BarcodePrinting(Document):
 			x_var=0
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
-			pdf.drawString(0, 10, item.item_name)
+			pdf.drawString(0, 20, item.item_name)
 			barcode = code39.Extended39(string) # code39 type barcode generation here
 			barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
 			pdf.setFont("Courier", 12)
-			pdf.drawString(0, 15, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawString(0, 30, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.setFont("Courier", 16)
-			pdf.drawString(0, 0, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawString(0, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
@@ -120,7 +120,7 @@ class BarcodePrinting(Document):
 			# barcode128.drawOn(pdf, x_pos, y_pos)
 			
 			pdf.setFont("Courier", 12)
-			pdf.drawString(20, 10, item.item_name)
+			pdf.drawString(10, 20, item.item_name)
 			pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
@@ -145,11 +145,11 @@ class BarcodePrinting(Document):
 			# bounds = barcode_eanbc13.getBounds()
 			# width = bounds[2] - bounds[0]
 			# height = bounds[3] - bounds[1]
-			d = Drawing(50, 10)
+			d = Drawing(30*mm,15*mm)
 			d.add(barcode_eanbc13)
-			renderPDF.draw(d, pdf, x_var*mm , y_var*mm)			
+			renderPDF.draw(d, pdf, 10 , 30)			
 			pdf.setFont("Courier", 12)
-			pdf.drawString(10, 30, item.item_name)
+			pdf.drawString(10, 20, item.item_name)
 			pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
