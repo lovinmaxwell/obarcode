@@ -75,26 +75,31 @@ class BarcodePrinting(Document):
 		# initializing variables with values
 		fileName = 'sample.pdf'
 		# image = 'image.jpg'
+		
 		for item in self.items:
 			# creating a pdf object
 			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
 			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
-
+			pdf.setFont("Courier", 16)
 			x_var=0
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
+			pdf.drawString(0, 10, item.item_name)
 			barcode = code39.Extended39(string) # code39 type barcode generation here
 			barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
-			pdf.setFont("Courier", 25) # font type and size0
-			pdf.drawString(0, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.setFont("Courier", 12)
+			pdf.drawString(0, 15, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.setFont("Courier", 16)
+			pdf.drawString(0, 0, item.rate) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
 		
 		merger.write('new.pdf')
+		f1 = PdfFileReader(open('new.pdf', 'rb'))
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
-		save_file(file_name, merger, self.doctype,
+		save_file(file_name, f1, self.doctype,
               self.name, is_private=1)
 		
 		pass
