@@ -71,7 +71,7 @@ class BarcodePrinting(Document):
 		from reportlab.lib.units import mm
 		from reportlab.graphics.barcode import code39,code128
 		
-		merger = PdfFileWriter()
+		merger = PdfFileMerger()
 		# initializing variables with values
 		fileName = 'sample.pdf'
 		# image = 'image.jpg'
@@ -88,8 +88,10 @@ class BarcodePrinting(Document):
 			pdf.setFont("Courier", 25) # font type and size0
 			pdf.drawString(0, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
-			merger.addPage(pdf.getpdfdata())
+			f1 = PdfFileReader(open(fileName, 'rb'))
+			merger.append(f1)
 		
+		merger.write('new.pdf')
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, merger, self.doctype,
