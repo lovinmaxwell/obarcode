@@ -138,7 +138,7 @@ class BarcodePrinting(Document):
 			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
 			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
 
-			x_var=0
+			x_var=10
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
 			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string)
@@ -147,11 +147,9 @@ class BarcodePrinting(Document):
 			# height = bounds[3] - bounds[1]
 			d = Drawing(50, 10)
 			d.add(barcode_eanbc13)
-			renderPDF.draw(d, pdf, x_var*mm , y_var*mm)
-			# barcode128.drawOn(pdf, x_pos, y_pos)
-			
+			renderPDF.draw(d, pdf, x_var*mm , y_var*mm)			
 			pdf.setFont("Courier", 12)
-			pdf.drawString(10, 30*mm, item.item_name)
+			pdf.drawString(10, 30, item.item_name)
 			pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))

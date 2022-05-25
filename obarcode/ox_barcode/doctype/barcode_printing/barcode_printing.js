@@ -111,7 +111,6 @@ frappe.ui.form.on('Barcode Printing', {
 			callback: function(r) {
 				console.log(r);
 				frm.refresh();
-				frm.doc.refresh();
 			}
 		});
 	},
