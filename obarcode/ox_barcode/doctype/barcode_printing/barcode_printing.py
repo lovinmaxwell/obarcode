@@ -69,7 +69,7 @@ class BarcodePrinting(Document):
 		from reportlab.lib import colors
 		from reportlab.lib.pagesizes import A4
 		from reportlab.lib.units import mm
-		from reportlab.graphics.barcode import code39,code128
+		from reportlab.graphics.barcode import eanbc,code39,code128
 		
 		merger = PdfFileMerger()
 		# initializing variables with values
@@ -144,6 +144,32 @@ class BarcodePrinting(Document):
 		
 		merger.write('new1.pdf')
 
+		merger = PdfFileMerger()
+		# initializing variables with values
+		fileName = 'sample3.pdf'
+		# image = 'image.jpg'
+		
+		for item in self.items:
+			# creating a pdf object
+			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
+			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
+			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string)
+
+			x_var=0
+			y_var=10
+			pdf.setFillColorRGB(0,0,0) # change colours of text here
+			barcode_eanbc13.drawOn(pdf, x_var*mm , y_var*mm)
+			# barcode128.drawOn(pdf, x_pos, y_pos)
+			
+			pdf.setFont("Courier", 12)
+			pdf.drawString(10, 30*mm, item.item_name)
+			pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.save()
+			f1 = PdfFileReader(open(fileName, 'rb'))
+			merger.append(f1)
+		
+		merger.write('new3.pdf')
+
 		f1 = open('new.pdf', 'rb')
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
@@ -153,6 +179,11 @@ class BarcodePrinting(Document):
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, f2.read(), self.doctype,self.name, is_private=1)
+
+		f3 = open('new3.pdf', 'rb')
+		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
+		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
+		save_file(file_name, f3.read(), self.doctype,self.name, is_private=1)
 		
 		pass
 
