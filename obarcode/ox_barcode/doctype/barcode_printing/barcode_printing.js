@@ -110,6 +110,7 @@ frappe.ui.form.on('Barcode Printing', {
 			method: "printer_test",
 			callback: function(r) {
 				console.log(r);
+				frm.refresh();
 			}
 		});
 	},

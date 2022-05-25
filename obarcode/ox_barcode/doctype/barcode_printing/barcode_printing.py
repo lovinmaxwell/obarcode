@@ -84,13 +84,13 @@ class BarcodePrinting(Document):
 		# image = 'image.jpg'
 
 		# creating a pdf object
-		pdf = canvas.Canvas(fileName,pagesize=(25*mm,36*mm))
+		pdf = canvas.Canvas(fileName,pagesize=(100*mm,150*mm))
 		string = '01234567' # This is the 'barcode'. barcode generation only takes strings..?
 
 		x_var=0
 		y_var=10
 		pdf.setFillColorRGB(0,0,0) # change colours of text here
-		barcode = code39.Extended39(string,barWidth=.5*mm,barHeight=10*mm, checksum=0) # code39 type barcode generation here
+		barcode = code39.Extended39(string) # code39 type barcode generation here
 		barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
 		pdf.setFont("Courier", 25) # font type and size0
 		pdf.drawString(40, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
