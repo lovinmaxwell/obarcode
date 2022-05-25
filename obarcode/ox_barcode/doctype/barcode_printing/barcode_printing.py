@@ -142,9 +142,9 @@ class BarcodePrinting(Document):
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
 			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string)
-			# bounds = barcode_eanbc13.getBounds()
-			# width = bounds[2] - bounds[0]
-			# height = bounds[3] - bounds[1]
+			bounds = barcode_eanbc13.getBounds()
+			width = bounds[2] - bounds[0]
+			height = bounds[3] - bounds[1]
 			d = Drawing(10,20)
 			d.add(barcode_eanbc13)
 			renderPDF.draw(d, pdf, 10 , -10)			
