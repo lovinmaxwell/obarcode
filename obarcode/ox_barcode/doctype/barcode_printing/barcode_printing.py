@@ -145,8 +145,9 @@ class BarcodePrinting(Document):
 			bounds = barcode_eanbc13.getBounds()
 			width = bounds[2] - bounds[0]
 			height = bounds[3] - bounds[1]
-			d = Drawing(10,20)
+			d = Drawing(0,0)
 			d.add(barcode_eanbc13)
+			d.height = 30
 			renderPDF.draw(d, pdf, 10 , -10)			
 			pdf.setFont("Courier", 12)
 			pdf.drawString(10, 30, item.item_name)
