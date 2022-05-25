@@ -147,12 +147,12 @@ class BarcodePrinting(Document):
 			# height = bounds[3] - bounds[1]
 			d = Drawing(50*mm,20*mm)
 			d.add(barcode_eanbc13)
-			d.drawOn(pdf, 10, 10)
+			d.drawOn(pdf, 20, 20)
 			# renderPDF.draw(d, pdf, 10 , -10)			
 			pdf.setFont("Courier-Bold", 8)
-			pdf.drawString(50*mm/2, 10, item.item_name)
-			pdf.rotate(45)
-			pdf.drawString(80, 10, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawCentredString(50*mm/2, 10, item.item_name)
+			pdf.rotate(90)
+			pdf.drawString(10, 80, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
