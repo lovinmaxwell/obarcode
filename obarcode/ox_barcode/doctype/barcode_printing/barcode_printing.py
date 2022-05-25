@@ -87,8 +87,8 @@ class BarcodePrinting(Document):
 			barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
 			pdf.setFont("Courier", 25) # font type and size0
 			pdf.drawString(0, 10, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-			# pdf.save()
-			merger.addPage(pdf)
+			pdf.save()
+			merger.addPage(pdf.getpdfdata())
 		
 		to_name = random_string(random.randint(8,13),"1234567890").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
