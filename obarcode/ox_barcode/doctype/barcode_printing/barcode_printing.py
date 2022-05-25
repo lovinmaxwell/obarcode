@@ -97,7 +97,11 @@ class BarcodePrinting(Document):
 		
 		merger.write('new.pdf')
 		
-
+		merger = PdfFileMerger()
+		# initializing variables with values
+		fileName = 'sample2.pdf'
+		# image = 'image.jpg'
+		
 		for item in self.items:
 			# creating a pdf object
 			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
@@ -106,26 +110,30 @@ class BarcodePrinting(Document):
 			# setting barWidth to 1
 			initial_width = .1
 
-			barcode128 = code128.Code128(string, humanReadable=True, barWidth=initial_width,
-										barHeight=1)
-			# creates the barcode, computes the total size
-			barcode128._calculate()
-			# the quiet space before and after the barcode
-			quiet = barcode128.lquiet + barcode128.rquiet
-			# total_wid = barWidth*charWid + quiet_space
-			# char_wid = (total_width - quiet) / bar_width
-			char_width = (barcode128._width - quiet) / barcode128.barWidth
-			# now that we have the char width we can calculate the bar width
-			bar_width = (final_size - quiet) / char_width
-			# set the new bar width
-			barcode128.barWidth = bar_width
-			# re-calculate
-			barcode128._calculate()
+			barcode128 = code128.Code128(string, humanReadable=True)
+			# # creates the barcode, computes the total size
+			# barcode128._calculate()
+			# # the quiet space before and after the barcode
+			# quiet = barcode128.lquiet + barcode128.rquiet
+			# # total_wid = barWidth*charWid + quiet_space
+			# # char_wid = (total_width - quiet) / bar_width
+			# char_width = (barcode128._width - quiet) / barcode128.barWidth
+			# # now that we have the char width we can calculate the bar width
+			# bar_width = (final_size - quiet) / char_width
+			# # set the new bar width
+			# barcode128.barWidth = bar_width
+			# # re-calculate
+			# barcode128._calculate()
 
-			# draw the barcode on the canvas
-			wid, hgt = barcode128._width, barcode128._height
-			x_pos = y_pos = final_size # arbitrary
-			barcode128.drawOn(pdf, x_pos, y_pos)
+			# # draw the barcode on the canvas
+			# wid, hgt = barcode128._width, barcode128._height
+			# x_pos = y_pos = final_size # arbitrary
+
+			x_var=0
+			y_var=10
+			pdf.setFillColorRGB(0,0,0) # change colours of text here
+			barcode128.drawOn(pdf, x_var*mm , y_var*mm)
+			# barcode128.drawOn(pdf, x_pos, y_pos)
 			
 			pdf.setFont("Courier", 12)
 			pdf.drawString(20, 10, item.item_name)
