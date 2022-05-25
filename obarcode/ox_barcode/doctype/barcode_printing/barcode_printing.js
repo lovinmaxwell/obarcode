@@ -108,8 +108,11 @@ frappe.ui.form.on('Barcode Printing', {
 		frappe.call({
 			doc: frm.doc,
 			method: "printer_test",
+			freeze: true,
+			freeze_message: __("Creating pdf..."),
 			callback: function(r) {
 				console.log(r);
+				frm.reload_doc();
 				frm.refresh();
 			}
 		});
