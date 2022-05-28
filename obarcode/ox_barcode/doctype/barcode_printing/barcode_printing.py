@@ -73,7 +73,7 @@ class BarcodePrinting(Document):
 		from reportlab.graphics.barcode import eanbc,code39,code128
 		from reportlab.graphics import renderPDF
 		from reportlab.graphics.shapes import Drawing 
-		from erpnext import get_default_currency
+		from erpnext import get_default_company
 		
 		merger = PdfFileMerger()
 
@@ -90,12 +90,12 @@ class BarcodePrinting(Document):
 		# 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
 		# 	barcode128 = code128.Code128(string, humanReadable=True)
 		# 	barcode128.drawOn(pdf, x_var*mm , y_var*mm)
-			company_name = get_default_currency()
+			company_name = get_default_company()
 			pdf.drawCentredString(xLabel/2, -5, company_name)
-			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
-			d = Drawing(xLabel,20*mm)
-			d.add(barcode_eanbc13)
-			d.drawOn(pdf, 20, 20)
+			# barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
+			# d = Drawing(xLabel,20*mm)
+			# d.add(barcode_eanbc13)
+			# d.drawOn(pdf, 20, 20)
 			pdf.drawCentredString(xLabel/2, 10, item.item_name)
 			pdf.rotate(90)
 			pdf.drawCentredString(yLabel/2, -10, f'QR {item.rate}')
