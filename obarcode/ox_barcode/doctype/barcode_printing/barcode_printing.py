@@ -95,7 +95,7 @@ class BarcodePrinting(Document):
 			d.add(barcode_eanbc13)
 			d.drawOn(pdf, 20, 20)
 			company_name = get_default_company()
-			pdf.drawCentredString(xLabel/2, 30, company_name)
+			pdf.drawCentredString(xLabel/2, 50, company_name)
 			pdf.drawCentredString(xLabel/2, 10, item.item_name)
 			pdf.rotate(90)
 			pdf.drawCentredString(yLabel/2, -10, f'QR {item.rate}')
