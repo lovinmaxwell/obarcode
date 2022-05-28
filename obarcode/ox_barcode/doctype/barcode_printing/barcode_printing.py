@@ -107,7 +107,7 @@ class BarcodePrinting(Document):
 		merger.write(mFileName)
 
 		f1 = open(mFileName, 'rb')
-		to_name = random_string(random.randint(8,13),"1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ").zfill(13)
+		to_name = random_string(random.randint(8,13)).zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
 		if os.path.exists(fileName):os.remove(fileName)
