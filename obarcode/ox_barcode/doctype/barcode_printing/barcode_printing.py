@@ -88,13 +88,12 @@ class BarcodePrinting(Document):
 			pdf.setFillColorRGB(0,0,0) # change colors of text here
 			pdf.setFont("Courier-Bold", 8)
 			# 	barcode = code39.Extended39(string) # code39 type barcode generation here
+			# 	barcode = code128.Code128(string, humanReadable=True)
 			# 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
-			# 	barcode128 = code128.Code128(string, humanReadable=True)
-			# 	barcode128.drawOn(pdf, x_var*mm , y_var*mm)
 			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
 			d = Drawing(xLabel,20*mm)
 			d.add(barcode_eanbc13)
-			d.drawOn(pdf, 20, 20)
+			d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
 			company_name = get_default_company()
 			pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
 			pdf.drawCentredString(xLabel/2, yLabel*0.10, item.item_name)
