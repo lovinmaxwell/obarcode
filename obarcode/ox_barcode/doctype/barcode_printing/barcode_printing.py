@@ -81,7 +81,7 @@ class BarcodePrinting(Document):
 		
 		# for item in self.items:
 		# 	# creating a pdf object
-		# 	pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
+		# 	pdf = canvas.Canvas(fileName,pagesize=(50*mm,yLabel))
 		# 	string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
 		# 	pdf.setFont("Courier", 16)
 		# 	x_var=0
@@ -132,28 +132,29 @@ class BarcodePrinting(Document):
 		# merger = PdfFileMerger()
 		# initializing variables with values
 		# image = 'image.jpg'
-		
+		xLabel = 50*mm
+		yLabel = 25*mm
 		fileName = f'{_now_ms()}.pdf'
 		for item in self.items:
 			# creating a pdf object
-			pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
+			pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
 			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
 
 			x_var=10
 			y_var=10
 			pdf.setFillColorRGB(0,0,0) # change colours of text here
-			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=17*mm)
+			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
 			# bounds = barcode_eanbc13.getBounds()
 			# width = bounds[2] - bounds[0]
 			# height = bounds[3] - bounds[1]
-			d = Drawing(50*mm,20*mm)
+			d = Drawing(xLabel,20*mm)
 			d.add(barcode_eanbc13)
 			d.drawOn(pdf, 20, 20)
 			# renderPDF.draw(d, pdf, 10 , -10)			
 			pdf.setFont("Courier-Bold", 8)
-			pdf.drawCentredString(50*mm/2, 10, item.item_name)
+			pdf.drawCentredString(xLabel/2, 10, item.item_name)
 			pdf.rotate(90)
-			pdf.drawCentredString(25*mm/2, -10, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawCentredString(yLabel/2, -10, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
