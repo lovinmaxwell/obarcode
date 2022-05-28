@@ -74,6 +74,7 @@ class BarcodePrinting(Document):
 		from reportlab.graphics import renderPDF
 		from reportlab.graphics.shapes import Drawing 
 		from erpnext import get_default_company
+		from obarcode.utils import _now_ms,random_string
 		
 		merger = PdfFileMerger()
 
@@ -95,10 +96,10 @@ class BarcodePrinting(Document):
 			d.add(barcode_eanbc13)
 			d.drawOn(pdf, 20, 20)
 			company_name = get_default_company()
-			pdf.drawCentredString(xLabel/2, yLabel*0.90, company_name)
+			pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
 			pdf.drawCentredString(xLabel/2, yLabel*0.10, item.item_name)
 			pdf.rotate(90)
-			pdf.drawCentredString(yLabel/2, -10, f'QR {item.rate}')
+			pdf.drawCentredString(yLabel/2, -xLabel*0.10, f'QR {item.rate}')
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
@@ -107,17 +108,11 @@ class BarcodePrinting(Document):
 		merger.write(mFileName)
 
 		f1 = open(mFileName, 'rb')
-		to_name = random_string(random.randint(8,13),"12345678909").zfill(13)
+		to_name = random_string(random.randint(8,13),"1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
 		if os.path.exists(fileName):os.remove(fileName)
 		if os.path.exists(mFileName):os.remove(mFileName)
-		
-def random_string(size=6, chars=string.ascii_uppercase + string.digits):
-	return ''.join(random.choice(chars) for _ in range(size))
-
-def _now_ms():
-    return int(round(time.time() * 1000))
 
 @frappe.whitelist()
 def pr_make_barcode(source_name, target_doc=None):
