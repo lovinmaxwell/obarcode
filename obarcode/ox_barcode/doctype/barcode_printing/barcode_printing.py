@@ -17,7 +17,6 @@ from erpnext.manufacturing.doctype.work_order.work_order import get_item_details
 from PyPDF2 import PdfFileReader, PdfFileWriter
 import requests
 from PIL import Image
-from frappe.utils.file_manager import save_file
 import json
 import random
 import string
@@ -73,6 +72,9 @@ class BarcodePrinting(Document):
 		from reportlab.graphics.shapes import Drawing 
 		from erpnext import get_default_company
 		from obarcode.utils import _now_ms,random_string
+		from frappe.utils.file_manager import save_file
+
+		import os
 		
 		merger = PdfFileMerger()
 
@@ -106,7 +108,7 @@ class BarcodePrinting(Document):
 		merger.write(mFileName)
 
 		f1 = open(mFileName, 'rb')
-		to_name = random_string(random.randint(8,13)).zfill(13)
+		to_name = random_string(random.randint(8,13),"1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
 		if os.path.exists(fileName):os.remove(fileName)
