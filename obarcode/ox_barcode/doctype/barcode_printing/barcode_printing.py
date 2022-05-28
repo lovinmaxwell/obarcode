@@ -24,8 +24,6 @@ import string
 import time
 
 
-
-
 class BarcodePrinting(Document):
 	def get_item_details(self, args=None, for_update=False):
 		item = frappe.db.sql("""select i.name, i.stock_uom, i.description, i.image, i.item_name, i.item_group,
@@ -93,7 +91,8 @@ class BarcodePrinting(Document):
 			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
 			d = Drawing(xLabel,20*mm)
 			d.add(barcode_eanbc13)
-			d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
+			# d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
+			d.drawOn(pdf, 20, 20)
 			company_name = get_default_company()
 			pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
 			pdf.drawCentredString(xLabel/2, yLabel*0.10, item.item_name)
