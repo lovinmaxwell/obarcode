@@ -73,104 +73,46 @@ class BarcodePrinting(Document):
 		from reportlab.graphics.barcode import eanbc,code39,code128
 		from reportlab.graphics import renderPDF
 		from reportlab.graphics.shapes import Drawing 
+		from erpnext import get_default_currency
 		
 		merger = PdfFileMerger()
-		# initializing variables with values
-		# fileName = 'sample.pdf'
-		# # image = 'image.jpg'
-		
-		# for item in self.items:
-		# 	# creating a pdf object
-		# 	pdf = canvas.Canvas(fileName,pagesize=(50*mm,yLabel))
-		# 	string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
-		# 	pdf.setFont("Courier", 16)
-		# 	x_var=0
-		# 	y_var=10
-		# 	pdf.setFillColorRGB(0,0,0) # change colours of text here
-		# 	pdf.drawString(0, 20, item.item_name)
-		# 	barcode = code39.Extended39(string) # code39 type barcode generation here
-		# 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
-		# 	pdf.setFont("Courier", 12)
-		# 	pdf.drawString(0, 30, string) # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-		# 	pdf.setFont("Courier", 16)
-		# 	pdf.drawString(0, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-		# 	pdf.save()
-		# 	f1 = PdfFileReader(open(fileName, 'rb'))
-		# 	merger.append(f1)
-		
-		# merger.write('new.pdf')
-		
-		# # merger = PdfFileMerger()
-		# # initializing variables with values
-		# fileName = 'sample2.pdf'
-		# # image = 'image.jpg'
-		
-		# for item in self.items:
-		# 	# creating a pdf object
-		# 	pdf = canvas.Canvas(fileName,pagesize=(50*mm,25*mm))
-		# 	string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
-		# 	final_size = 100 # arbitrary
-		# 	# setting barWidth to 1
-		# 	initial_width = .1
 
-		# 	barcode128 = code128.Code128(string, humanReadable=True)
-		# 	x_var=0
-		# 	y_var=10
-		# 	pdf.setFillColorRGB(0,0,0) # change colours of text here
-		# 	barcode128.drawOn(pdf, x_var*mm , y_var*mm)
-		# 	# barcode128.drawOn(pdf, x_pos, y_pos)
-			
-		# 	pdf.setFont("Courier", 12)
-		# 	pdf.drawString(10, 20, item.item_name)
-		# 	pdf.drawString(10, 10, f'{item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
-		# 	pdf.save()
-		# 	f1 = PdfFileReader(open(fileName, 'rb'))
-		# 	merger.append(f1)
-		
-		# merger.write('new1.pdf')
-
-		# merger = PdfFileMerger()
-		# initializing variables with values
-		# image = 'image.jpg'
 		xLabel = 50*mm
 		yLabel = 25*mm
 		fileName = f'{_now_ms()}.pdf'
 		for item in self.items:
 			# creating a pdf object
 			pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
-			string = item.barcode # This is the 'barcode'. barcode generation only takes strings..?
-
-			x_var=10
-			y_var=10
-			pdf.setFillColorRGB(0,0,0) # change colours of text here
+			string = item.barcode
+			pdf.setFillColorRGB(0,0,0) # change colors of text here
+			pdf.setFont("Courier-Bold", 8)
+		# 	barcode = code39.Extended39(string) # code39 type barcode generation here
+		# 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
+		# 	barcode128 = code128.Code128(string, humanReadable=True)
+		# 	barcode128.drawOn(pdf, x_var*mm , y_var*mm)
+			company_name = get_default_currency()
+			pdf.drawCentredString(xLabel/2, -5, company_name)
 			barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
-			# bounds = barcode_eanbc13.getBounds()
-			# width = bounds[2] - bounds[0]
-			# height = bounds[3] - bounds[1]
 			d = Drawing(xLabel,20*mm)
 			d.add(barcode_eanbc13)
 			d.drawOn(pdf, 20, 20)
-			# renderPDF.draw(d, pdf, 10 , -10)			
-			pdf.setFont("Courier-Bold", 8)
 			pdf.drawCentredString(xLabel/2, 10, item.item_name)
 			pdf.rotate(90)
-			pdf.drawCentredString(yLabel/2, -10, f'QR {item.rate}') # coordinates for text..?(xpos, ypos, string) unknown units. 1/10th of barcode untins??
+			pdf.drawCentredString(yLabel/2, -10, f'QR {item.rate}')
 			pdf.save()
 			f1 = PdfFileReader(open(fileName, 'rb'))
 			merger.append(f1)
 
-		mfileName = f'{_now_ms()}.pdf'
-		merger.write(mfileName)
+		mFileName = f'{_now_ms()}.pdf'
+		merger.write(mFileName)
 
-		f1 = open(mfileName, 'rb')
+		f1 = open(mFileName, 'rb')
 		to_name = random_string(random.randint(8,13),"12345678909").zfill(13)
 		file_name = "{}.pdf".format(to_name.replace(" ", "-").replace("/", "-"))
 		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
 		if os.path.exists(fileName):os.remove(fileName)
-		if os.path.exists(mfileName):os.remove(mfileName)
+		if os.path.exists(mFileName):os.remove(mFileName)
 		
-		pass
-
 def random_string(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
