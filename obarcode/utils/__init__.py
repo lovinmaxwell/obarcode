@@ -62,7 +62,7 @@ def send_mail(to, subject, template, add_args, now=False, retry =3,header_color 
 
 
 @frappe.whitelist()
-def generate_item_barcode(dt,dn,item_name,item_rate,count=1,x=50,y=25):
+def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25):
     """
 		Generate Item Barcode
     """
@@ -81,10 +81,10 @@ def generate_item_barcode(dt,dn,item_name,item_rate,count=1,x=50,y=25):
     xLabel = x*mm
     yLabel = y*mm
     fileName = f'{_now_ms()}.pdf'
-    for item in range(count):
+    for item in range(qty):
         # creating a pdf object
         pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
-        string = item.barcode
+        string = item_barcode
         pdf.setFillColorRGB(0,0,0) # change colors of text here
         pdf.setFont("Courier-Bold", 8)
         #   from reportlab.graphics.barcode import eanbc,code39,code128
