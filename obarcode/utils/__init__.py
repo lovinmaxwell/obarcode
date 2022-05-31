@@ -81,7 +81,7 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
     xLabel = float(x)*mm
     yLabel = float(y)*mm
     fileName = f'{_now_ms()}.pdf'
-    for item in range(qty):
+    for item in range(int(qty)):
         # creating a pdf object
         pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
         string = item_barcode
