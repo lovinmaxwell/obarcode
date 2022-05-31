@@ -81,7 +81,7 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
     xLabel = float(x)*mm
     yLabel = float(y)*mm
     fileName = f'{_now_ms()}.pdf'
-    for item in range(int(qty)):
+    for i in range(int(qty)):
         # creating a pdf object
         pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
         string = item_barcode
@@ -95,7 +95,7 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
         d = Drawing(xLabel,20*mm)
         d.add(barcode_eanbc13)
         # d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
-        d.drawOn(pdf, 20, 20)
+        d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
         company_name = get_default_company()
         pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
         pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
