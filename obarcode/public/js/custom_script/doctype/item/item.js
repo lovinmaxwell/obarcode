@@ -36,7 +36,7 @@ let reject_items = (opts) => {
 
 
 	const dialog = new frappe.ui.Dialog({
-		title: __('Print Barcode'),
+		title: __('Generate Barcode'),
 		fields: [
 			{
 				fieldtype: 'Int', fieldname: 'qty', label: __('Qty'),
@@ -60,14 +60,14 @@ let reject_items = (opts) => {
 			dialog.hide();
 			let vals = dialog.get_values();
 			if (!vals) return;
-            let xLabel = 50;
-            let yLabel = 25;
+            let xLabel = 50.00;
+            let yLabel = 25.00;
             if(vals.label_size == '38mm x 25mm'){
-                xLabel = 38;
-                yLabel = 25;
+                xLabel = 38.00;
+                yLabel = 25.00;
             }else if(vals.label_size == '50mm x 25mm'){
-                xLabel = 50;
-                yLabel = 25;
+                xLabel = 50.00;
+                yLabel = 25.00;
             }
 			frappe.call({
                 method: "obarcode.utils.generate_item_barcode",
@@ -89,7 +89,7 @@ let reject_items = (opts) => {
             });
 			
 		},
-		primary_action_label: __('Reject')
+		primary_action_label: __('Generate')
 	});
 	dialog.show();
 }
