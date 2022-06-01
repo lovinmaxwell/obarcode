@@ -75,11 +75,20 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
     from erpnext import get_default_company
     from obarcode.utils import _now_ms,random_string
     from frappe.utils.file_manager import save_file
-    
-    merger = PdfFileMerger()
+
 
     xLabel = float(x)*mm
     yLabel = float(y)*mm
+    merger = PdfFileMerger()
+    barcodeDrawOnX = 20
+    barcodeDrawOnY = 20
+    barcodeBarHeight = yLabel/2
+    if int(x) == 38:
+        barcodeDrawOnX = xLabel*0.20
+        barcodeDrawOnY = yLabel*0.20
+        barcodeBarHeight = yLabel * 0.50
+
+    
     fileName = f'{_now_ms()}.pdf'
     for i in range(int(qty)):
         # creating a pdf object
@@ -91,11 +100,11 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
         # 	barcode = code39.Extended39(string) # code39 type barcode generation here
         # 	barcode = code128.Code128(string, humanReadable=True)
         # 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
-        barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=yLabel/2)
+        barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=barcodeBarHeight)
         d = Drawing(xLabel,20*mm)
         d.add(barcode_eanbc13)
         # d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
-        d.drawOn(pdf, xLabel*0.20 if int(x) == 50 else xLabel*0.05, yLabel*0.25)
+        d.drawOn(pdf, barcodeDrawOnX, barcodeDrawOnY)
         company_name = get_default_company()
         pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
         pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
