@@ -84,9 +84,9 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
     barcodeDrawOnY = 20
     barcodeBarHeight = yLabel/2
     if int(x) == 38:
-        barcodeDrawOnX = xLabel*0.20
-        barcodeDrawOnY = yLabel*0.20
-        barcodeBarHeight = yLabel * 0.40
+        barcodeDrawOnX = xLabel*0.10
+        barcodeDrawOnY = 20
+        barcodeBarHeight = yLabel * 0.45
 
     
     fileName = f'{_now_ms()}.pdf'
