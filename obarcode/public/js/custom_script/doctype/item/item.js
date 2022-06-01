@@ -16,14 +16,14 @@ frappe.ui.form.on("Item", "refresh", function(frm) {
                 parent: "Item"
             },
             callback: function(r) {
-                reject_items({frm: me.frm,barcode: r.message});
+                gen_item_barcode({frm: me.frm,barcode: r.message});
             }
         });
     });
 });
 
 
-let reject_items = (opts) => {
+let gen_item_barcode = (opts) => {
     console.log(frappe.get_meta("Item Barcode"));
 	const frm = opts.frm;
 	const _barcode = opts.barcode;
@@ -74,6 +74,7 @@ let reject_items = (opts) => {
                 args: {
                     dt: frm.doc.doctype,
                     dn: frm.doc.name,
+                    item_code: frm.doc.item_code,
                     item_name: frm.doc.item_name,
                     item_rate: '',
                     item_barcode: vals.item_barcode,

@@ -1,3 +1,4 @@
+from erpnext.e_commerce.shopping_cart.product_info import get_product_info_for_website
 import frappe
 from frappe import _
 import datetime
@@ -62,7 +63,7 @@ def send_mail(to, subject, template, add_args, now=False, retry =3,header_color 
 
 
 @frappe.whitelist()
-def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25):
+def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1,x=50,y=25):
     """
 		Generate Item Barcode
     """
@@ -83,24 +84,30 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
     barcodeDrawOnX = 20
     barcodeDrawOnY = 20
     barcodeBarHeight = yLabel/2
+    fontSize = 8
     if int(x) == 38:
-        barcodeDrawOnX = xLabel*0.10
+        barcodeDrawOnX = xLabel*0.05
         barcodeDrawOnY = 20
         barcodeBarHeight = yLabel * 0.45
-
+        fontSize = 6
     
+    product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
+    price = product_info.get('price') #formatted_price
+    if price:
+        item_rate =  price.get('formatted_price')
+
     fileName = f'{_now_ms()}.pdf'
     for i in range(int(qty)):
         # creating a pdf object
         pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
         string = item_barcode
         pdf.setFillColorRGB(0,0,0) # change colors of text here
-        pdf.setFont("Courier-Bold", 8)
+        pdf.setFont("Courier-Bold", fontSize)
         #   from reportlab.graphics.barcode import eanbc,code39,code128
         # 	barcode = code39.Extended39(string) # code39 type barcode generation here
         # 	barcode = code128.Code128(string, humanReadable=True)
         # 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
-        barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=barcodeBarHeight)
+        barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=barcodeBarHeight,fontSize = fontSize)
         d = Drawing(xLabel,20*mm)
         d.add(barcode_eanbc13)
         # d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
