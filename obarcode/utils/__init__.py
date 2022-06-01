@@ -120,7 +120,7 @@ def generate_item_barcode(dt,dn,item_name,item_rate,item_barcode,qty=1,x=50,y=25
     f1 = open(mFileName, 'rb')
     # to_name = random_string(random.randint(1,6),"1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ").zfill(6)
     # file_name = "{}-{}.pdf".format(item_barcode,to_name.replace(" ", "-").replace("/", "-"))
-    file_name = f'{item_barcode}-{_now_ms()}.pdf'
+    file_name = f'{item_barcode}-{qty}-{x}x{y}-{_now_ms()}.pdf'
     save_file(file_name, f1.read(), dt,dn , is_private=1)
     if os.path.exists(fileName):os.remove(fileName)
     if os.path.exists(mFileName):os.remove(mFileName)
