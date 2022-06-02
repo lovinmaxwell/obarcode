@@ -80,8 +80,15 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     from erpnext import get_default_company
     from obarcode.utils import _now_ms,random_string
     from frappe.utils.file_manager import save_file
+    import arabic_reshaper
+    from bidi.algorithm import get_display
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.pdfbase import pdfmetrics
 
+    pdfmetrics.registerFont(TTFont('Arabic', "/assets/obarcode/fonts/29ltbukraregular.ttf"))
 
+    #init the style sheet
+    # styles = getSampleStyleSheet()
     xLabel = float(x)*mm
     yLabel = float(y)*mm
     merger = PdfFileMerger()
@@ -108,6 +115,8 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     
     # product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
     # price = product_info.get('price') #formatted_price
+
+    # app_logo_url = "/assets/obarcode/fonts/29ltbukraregular.ttf"
     
     cart_settings = get_shopping_cart_settings()
     price = get_price(
@@ -145,7 +154,10 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
         pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
         pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
         pdf.rotate(90)
-        pdf.drawCentredString(yLabel/2, -xLabel*0.10, item_rate)
+        pdf.setFont("Arabic", fontSize)
+        rehaped_text = arabic_reshaper.reshape(item_rate)
+        bidi_text = get_display(rehaped_text)
+        pdf.drawCentredString(yLabel/2, -xLabel*0.10, bidi_text)
         pdf.save()
         f1 = PdfFileReader(open(fileName, 'rb'))
         merger.append(f1)
