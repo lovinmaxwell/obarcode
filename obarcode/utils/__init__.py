@@ -14,6 +14,8 @@ from frappe.utils.data import now_datetime
 from frappe.utils.logger import set_log_level
 from frappe.utils import cint, cstr, getdate
 from frappe.utils import get_formatted_email
+set_log_level("DEBUG")
+oLogger = frappe.logger("obarcode", allow_site=True, file_count=50)
 
 
 def get_attachment_path(dt, dn):
@@ -85,18 +87,38 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     barcodeDrawOnY = 20
     barcodeBarHeight = yLabel/2
     fontSize = 8
+
+
     if int(x) == 38:
         barcodeDrawOnX = xLabel*0.05
         barcodeDrawOnY = 20
         barcodeBarHeight = yLabel * 0.45
         fontSize = 6
+
+    oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
+    oLogger.debug(f'xLabel - {xLabel}')
+    oLogger.debug(f'yLabel - {yLabel}')
+    oLogger.debug(f'barcodeDrawOnX - {barcodeDrawOnX}')
+    oLogger.debug(f'barcodeDrawOnY - {barcodeDrawOnY}')
+    oLogger.debug(f'barcodeBarHeight - {barcodeBarHeight}')
+    oLogger.debug(f'fontSize - {fontSize}')
+
     
     product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
     price = product_info.get('price') #formatted_price
+    
+    oLogger.debug(product_info)
+    oLogger.debug(price)
+    
     if price:
         item_rate =  price.get('formatted_price')
+        oLogger.debug(item_rate)
+    
 
     fileName = f'{_now_ms()}.pdf'
+    
+    oLogger.debug(f'fileName - {fileName}')
+    
     for i in range(int(qty)):
         # creating a pdf object
         pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
@@ -131,3 +153,4 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     save_file(file_name, f1.read(), dt,dn , is_private=1)
     if os.path.exists(fileName):os.remove(fileName)
     if os.path.exists(mFileName):os.remove(mFileName)
+    oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
