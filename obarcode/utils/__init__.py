@@ -157,7 +157,7 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
         pdf.setFont("Arabic", fontSize-1)
         rehaped_text = arabic_reshaper.reshape(item_rate)
         bidi_text = get_display(rehaped_text)
-        pdf.drawCentredString(yLabel/2, -xLabel*0.15, bidi_text)
+        pdf.drawCentredString(yLabel*0.60, -xLabel*0.10, bidi_text)
         pdf.save()
         f1 = PdfFileReader(open(fileName, 'rb'))
         merger.append(f1)
