@@ -40,9 +40,9 @@ frappe.ui.form.on('Barcode Printing', {
 						yLabel = 25.00;
 					}
 					frappe.call({
-						method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.generate_item_barcode",
+						method: "generate_item_barcode",
+						doc: frm.doc,
 						args: {
-							doc: frm.doc,
 							qty: vals.qty,
 							x: xLabel,
 							y: yLabel,
@@ -552,6 +552,7 @@ frappe.ui.form.on('Barcode Generator Items', {
 				'cost_center'		: d.cost_center,
 				'company'		: frm.doc.company,
 				'qty'			: d.qty,
+				// 'rate'			: d.rate,
 				'voucher_type'		: frm.doc.doctype,
 				'voucher_no'		: d.name,
 				'allow_zero_valuation': 1,
