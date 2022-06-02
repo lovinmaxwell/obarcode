@@ -3,27 +3,40 @@
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
+from erpnext.e_commerce.doctype.e_commerce_settings.e_commerce_settings import get_shopping_cart_settings
+from erpnext.utilities.product import get_price
 import frappe, json, urllib
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
-from frappe import msgprint, _ 
+from frappe import msgprint, _
+from frappe.utils.data import fmt_money 
 from six import string_types, iteritems
 import qrcode, io, os
 from io import BytesIO	
 import base64
 from frappe.integrations.utils import make_get_request, make_post_request, create_request_log
-from frappe.utils import cstr, flt, cint, nowdate, add_days, comma_and, now_datetime, ceil, get_url
-from erpnext.manufacturing.doctype.work_order.work_order import get_item_details
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from frappe.utils import cstr, flt, cint, nowdate, get_url
 import requests
 from PIL import Image
 import json
 import random
-import string
-import time
+from PyPDF2 import PdfFileReader,PdfFileMerger
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+from reportlab.graphics.barcode import eanbc
+from reportlab.graphics.shapes import Drawing 
+from erpnext import get_default_company
+from obarcode.utils import _now_ms,random_string, oLogger
+from frappe.utils.file_manager import save_file
+import arabic_reshaper
+from bidi.algorithm import get_display
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
 
 
 class BarcodePrinting(Document):
+	@frappe.whitelist()
 	def get_item_details(self, args=None, for_update=False):
 		item = frappe.db.sql("""select i.name, i.stock_uom, i.description, i.image, i.item_name, i.item_group,
 				i.has_batch_no, i.sample_quantity, i.has_serial_no, i.allow_alternative_item,
@@ -60,21 +73,6 @@ class BarcodePrinting(Document):
 	
 	@frappe.whitelist()
 	def printer_test(self):
-		from PyPDF2 import PdfFileWriter, PdfFileReader,PdfFileMerger
-		from reportlab.pdfgen import canvas
-		from reportlab.pdfbase.ttfonts import TTFont
-		from reportlab.pdfbase import pdfmetrics
-		from reportlab.lib import colors
-		from reportlab.lib.pagesizes import A4
-		from reportlab.lib.units import mm
-		from reportlab.graphics.barcode import eanbc,code39,code128
-		from reportlab.graphics import renderPDF
-		from reportlab.graphics.shapes import Drawing 
-		from erpnext import get_default_company
-		from obarcode.utils import _now_ms,random_string
-		from frappe.utils.file_manager import save_file
-
-		import os
 		
 		merger = PdfFileMerger()
 
@@ -113,6 +111,106 @@ class BarcodePrinting(Document):
 		save_file(file_name, f1.read(), self.doctype,self.name, is_private=1)
 		if os.path.exists(fileName):os.remove(fileName)
 		if os.path.exists(mFileName):os.remove(mFileName)
+	
+	@frappe.whitelist()
+	def generate_item_barcode(self,qty=1,x=50,y=25):
+		"""
+			Generate Item Barcode
+		"""
+		pdfmetrics.registerFont(TTFont('Arabic', f'{os.path.dirname(__file__)}/fonts/29ltbukraregular.ttf'))
+
+		#init the style sheet
+		# styles = getSampleStyleSheet()
+		xLabel = float(x)*mm
+		yLabel = float(y)*mm
+		merger = PdfFileMerger()
+		barcodeDrawOnX = 20
+		barcodeDrawOnY = 20
+		barcodeBarHeight = yLabel/2
+		fontSize = 8
+
+
+		if cint(x) == 38:
+			barcodeDrawOnX = xLabel*0.05
+			barcodeDrawOnY = 20
+			barcodeBarHeight = yLabel * 0.45
+			fontSize = 6
+
+		# oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
+		# oLogger.debug(f'dirname - {os.path.dirname(__file__)}')
+		# oLogger.debug(f'xLabel - {xLabel}')
+		# oLogger.debug(f'yLabel - {yLabel}')
+		# oLogger.debug(f'barcodeDrawOnX - {barcodeDrawOnX}')
+		# oLogger.debug(f'barcodeDrawOnY - {barcodeDrawOnY}')
+		# oLogger.debug(f'barcodeBarHeight - {barcodeBarHeight}')
+		# oLogger.debug(f'fontSize - {fontSize}')
+
+		
+		# product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
+		# price = product_info.get('price') #formatted_price
+
+		# app_logo_url = "/assets/obarcode/fonts/29ltbukraregular.ttf"
+		
+		cart_settings = get_shopping_cart_settings()
+		currency = frappe.db.get_value("Price List", cart_settings.price_list, "currency")
+		# oLogger.debug(product_info)
+		# oLogger.debug(price)
+		
+		# if price:
+		# 	item_rate =  price.get('formatted_price')
+			# oLogger.debug(item_rate)
+		
+
+		fileName = f'{_now_ms()}.pdf'
+		company_name = get_default_company()
+		
+		# oLogger.debug(f'fileName - {fileName}')
+		for item in self.items:
+			if self.rate:
+				item_rate = fmt_money(self.rate, currency=currency)
+			else:
+				item_rate = ''
+			for i in range(int(qty)):
+				# creating a pdf object
+				pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
+				string = item.item_barcode
+				pdf.setFillColorRGB(0,0,0) # change colors of text here
+				pdf.setFont("Courier-Bold", fontSize)
+				#   from reportlab.graphics.barcode import eanbc,code39,code128
+				# 	barcode = code39.Extended39(string) # code39 type barcode generation here
+				# 	barcode = code128.Code128(string, humanReadable=True)
+				# 	barcode.drawOn(pdf, x_var*mm , y_var*mm) # coordinates for barcode?
+				try:
+					barcode_eanbc13 = eanbc.Ean13BarcodeWidget(string,barHeight=barcodeBarHeight,fontSize = fontSize)
+				except Exception as ex:
+					oLogger.debug(ex)
+					continue
+				d = Drawing(xLabel,20*mm)
+				d.add(barcode_eanbc13)
+				# d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
+				d.drawOn(pdf, barcodeDrawOnX, barcodeDrawOnY)
+				pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
+				pdf.drawCentredString(xLabel/2, yLabel*0.10, item.item_name)
+				pdf.rotate(90)
+				pdf.setFont("Arabic", fontSize-1)
+				rehaped_text = arabic_reshaper.reshape(item_rate)
+				bidi_text = get_display(rehaped_text)
+				pdf.drawCentredString(yLabel*0.60, -xLabel*0.10, bidi_text)
+				pdf.save()
+				f1 = PdfFileReader(open(fileName, 'rb'))
+				merger.append(f1)
+
+		mFileName = f'{_now_ms()}.pdf'
+		merger.write(mFileName)
+
+		f1 = open(mFileName, 'rb')
+		# to_name = random_string(random.randint(1,6),"1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ").zfill(6)
+		# file_name = "{}-{}.pdf".format(item_barcode,to_name.replace(" ", "-").replace("/", "-"))
+		file_name = f'{_now_ms()}-{qty}-{x}x{y}.pdf'
+		save_file(file_name, f1.read(), self.doctype, self.name , is_private=1)
+		if os.path.exists(fileName):os.remove(fileName)
+		if os.path.exists(mFileName):os.remove(mFileName)
+		# oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
 
 @frappe.whitelist()
 def pr_make_barcode(source_name, target_doc=None):

@@ -137,6 +137,7 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     
     # oLogger.debug(f'fileName - {fileName}')
     
+    company_name = get_default_company()
     for i in range(int(qty)):
         # creating a pdf object
         pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
@@ -152,7 +153,6 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
         d.add(barcode_eanbc13)
         # d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
         d.drawOn(pdf, barcodeDrawOnX, barcodeDrawOnY)
-        company_name = get_default_company()
         pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
         pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
         pdf.rotate(90)

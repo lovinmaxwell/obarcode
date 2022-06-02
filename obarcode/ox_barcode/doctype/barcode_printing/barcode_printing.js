@@ -8,6 +8,57 @@ frappe.ui.form.on('Barcode Printing', {
 		frm.set_value("show_batch_no",0);
 	},
 	refresh: function(frm) {
+
+		frm.add_custom_button(__("Create Barcode"), function() {
+			console.log(frappe.get_meta("Item Barcode"));
+
+			const dialog = new frappe.ui.Dialog({
+				title: __('Generate Barcode'),
+				fields: [
+					{
+						fieldtype: 'Int', fieldname: 'qty', label: __('Qty'),
+						reqd: 1,
+						default : 1
+					},
+					{
+						fieldtype:'Select', fieldname:'label_size', label:__('Size'),
+						options: ['38mm x 25mm', '50mm x 25mm'].join('\n'),
+						default : '50mm x 25mm'
+					},
+				],
+				primary_action: () => {
+					dialog.hide();
+					let vals = dialog.get_values();
+					if (!vals) return;
+					let xLabel = 50.00;
+					let yLabel = 25.00;
+					if(vals.label_size == '38mm x 25mm'){
+						xLabel = 38.00;
+						yLabel = 25.00;
+					}else if(vals.label_size == '50mm x 25mm'){
+						xLabel = 50.00;
+						yLabel = 25.00;
+					}
+					frappe.call({
+						method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.generate_item_barcode",
+						args: {
+							doc: frm.doc,
+							qty: vals.qty,
+							x: xLabel,
+							y: yLabel,
+						},
+						freeze: true,
+						callback: function(r) {
+							frm.reload_doc();
+						}
+					});
+					
+				},
+				primary_action_label: __('Generate')
+			});
+			dialog.show();
+		});
+
 		frm.add_custom_button(__('Purchase Receipt'), function() {
 			erpnext.utils.map_current_doc({
 				method: "obarcode.ox_barcode.doctype.barcode_printing.barcode_printing.pr_make_barcode",
@@ -40,6 +91,8 @@ frappe.ui.form.on('Barcode Printing', {
 
 
 		}, __("Get items from"));
+
+		
 	},
 	validate: function(frm)
 	{
