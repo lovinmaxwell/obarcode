@@ -52,6 +52,15 @@ class BarcodePrinting(Document):
 
 		item = item[0]
 
+		cart_settings = get_shopping_cart_settings()
+		price = get_price(
+				args.get('item_code'), cart_settings.price_list, cart_settings.default_customer_group, cart_settings.company
+			)
+
+		item_rate = 0
+		if price:
+			item_rate =  price.get('price_list_rate')
+
 		ret = frappe._dict({
 			'uom'			      	: item.stock_uom,
 			'stock_uom'				: item.stock_uom,
@@ -59,6 +68,7 @@ class BarcodePrinting(Document):
 			'image'					: item.image,
 			'item_name' 		  	: item.item_name,
 			'qty'					: args.get("qty"),
+			'rate'					: item_rate,
 			'conversion_factor'		: 1,
 			'batch_no'				: '',
 			'actual_qty'			: 0,
