@@ -85,7 +85,7 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.pdfbase import pdfmetrics
 
-    pdfmetrics.registerFont(TTFont('Arabic', "29ltbukraregular.ttf"))
+    pdfmetrics.registerFont(TTFont('Arabic', "Hacen Qatar Regular.ttf"))
 
     #init the style sheet
     # styles = getSampleStyleSheet()
