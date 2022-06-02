@@ -174,8 +174,10 @@ class BarcodePrinting(Document):
 		fileName = f'{_now_ms()}.pdf'
 		company_name = get_default_company()
 		
-		# oLogger.debug(f'fileName - {fileName}')
+		oLogger.debug(self.items)
 		for item in self.items:
+			oLogger.debug(item)
+			item = frappe.get_doc("Barcode Generator Items",item)
 			if self.rate:
 				item_rate = fmt_money(self.rate, currency=currency)
 			else:
@@ -183,7 +185,7 @@ class BarcodePrinting(Document):
 			for i in range(int(qty)):
 				# creating a pdf object
 				pdf = canvas.Canvas(fileName,pagesize=(xLabel,yLabel))
-				string = item.item_barcode
+				string = item.barcode
 				pdf.setFillColorRGB(0,0,0) # change colors of text here
 				pdf.setFont("Courier-Bold", fontSize)
 				#   from reportlab.graphics.barcode import eanbc,code39,code128
