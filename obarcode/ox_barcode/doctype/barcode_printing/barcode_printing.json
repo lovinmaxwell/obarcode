@@ -21,7 +21,6 @@
   "items_section",
   "items",
   "get_barcode",
-  "printer_test",
   "section_break_23",
   "show_sku",
   "column_break_24",
@@ -271,16 +270,11 @@
    "fieldname": "show_sku",
    "fieldtype": "Check",
    "label": "Print Barcode"
-  },
-  {
-   "fieldname": "printer_test",
-   "fieldtype": "Button",
-   "label": "Printer Test"
   }
  ],
  "icon": "fa fa-print",
  "links": [],
- "modified": "2022-05-23 15:28:12.620208",
+ "modified": "2022-06-02 17:43:06.698296",
  "modified_by": "Administrator",
  "module": "Ox Barcode",
  "name": "Barcode Printing",
