@@ -1,4 +1,6 @@
+from erpnext.e_commerce.doctype.e_commerce_settings.e_commerce_settings import get_shopping_cart_settings
 from erpnext.e_commerce.shopping_cart.product_info import get_product_info_for_website
+from erpnext.utilities.product import get_price
 import frappe
 from frappe import _
 import datetime
@@ -104,10 +106,15 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     oLogger.debug(f'fontSize - {fontSize}')
 
     
-    product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
-    price = product_info.get('price') #formatted_price
+    # product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
+    # price = product_info.get('price') #formatted_price
     
-    oLogger.debug(product_info)
+    cart_settings = get_shopping_cart_settings()
+    price = get_price(
+				item_code, cart_settings.price_list, cart_settings.default_customer_group, cart_settings.company
+			)
+    
+    # oLogger.debug(product_info)
     oLogger.debug(price)
     
     if price:
