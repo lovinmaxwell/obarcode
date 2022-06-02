@@ -85,7 +85,8 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.pdfbase import pdfmetrics
 
-    pdfmetrics.registerFont(TTFont('Arabic', '/opt/bench/pos/sites/assets/obarcode/fonts/29ltbukraregular.ttf'))
+
+    pdfmetrics.registerFont(TTFont('Arabic', f'{os.path.dirname(__file__)}/fonts/29ltbukraregular.ttf'))
 
     #init the style sheet
     # styles = getSampleStyleSheet()
@@ -104,13 +105,14 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
         barcodeBarHeight = yLabel * 0.45
         fontSize = 6
 
-    oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
-    oLogger.debug(f'xLabel - {xLabel}')
-    oLogger.debug(f'yLabel - {yLabel}')
-    oLogger.debug(f'barcodeDrawOnX - {barcodeDrawOnX}')
-    oLogger.debug(f'barcodeDrawOnY - {barcodeDrawOnY}')
-    oLogger.debug(f'barcodeBarHeight - {barcodeBarHeight}')
-    oLogger.debug(f'fontSize - {fontSize}')
+    # oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
+    # oLogger.debug(f'dirname - {os.path.dirname(__file__)}')
+    # oLogger.debug(f'xLabel - {xLabel}')
+    # oLogger.debug(f'yLabel - {yLabel}')
+    # oLogger.debug(f'barcodeDrawOnX - {barcodeDrawOnX}')
+    # oLogger.debug(f'barcodeDrawOnY - {barcodeDrawOnY}')
+    # oLogger.debug(f'barcodeBarHeight - {barcodeBarHeight}')
+    # oLogger.debug(f'fontSize - {fontSize}')
 
     
     # product_info = get_product_info_for_website(item_code).get('product_info') # get_product_info_for_website
@@ -124,16 +126,16 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
 			)
     
     # oLogger.debug(product_info)
-    oLogger.debug(price)
+    # oLogger.debug(price)
     
     if price:
         item_rate =  price.get('formatted_price')
-        oLogger.debug(item_rate)
+        # oLogger.debug(item_rate)
     
 
     fileName = f'{_now_ms()}.pdf'
     
-    oLogger.debug(f'fileName - {fileName}')
+    # oLogger.debug(f'fileName - {fileName}')
     
     for i in range(int(qty)):
         # creating a pdf object
@@ -172,4 +174,4 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     save_file(file_name, f1.read(), dt,dn , is_private=1)
     if os.path.exists(fileName):os.remove(fileName)
     if os.path.exists(mFileName):os.remove(mFileName)
-    oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
+    # oLogger.debug('-------------xxxxxxxxxxxxxxxxx--------------')
