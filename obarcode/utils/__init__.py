@@ -85,7 +85,7 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.pdfbase import pdfmetrics
 
-    pdfmetrics.registerFont(TTFont('Arabic', '/opt/bench/pos/apps/obarcode/obarcode/utils/Hacen Qatar.ttf'))
+    pdfmetrics.registerFont(TTFont('Arabic', '/opt/bench/pos/sites/assets/obarcode/fonts/29ltbukraregular.ttf'))
 
     #init the style sheet
     # styles = getSampleStyleSheet()
@@ -154,10 +154,10 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
         pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
         pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
         pdf.rotate(90)
-        pdf.setFont("Arabic", fontSize)
+        pdf.setFont("Arabic", fontSize-1)
         rehaped_text = arabic_reshaper.reshape(item_rate)
         bidi_text = get_display(rehaped_text)
-        pdf.drawCentredString(yLabel/2, -xLabel*0.10, bidi_text)
+        pdf.drawCentredString(yLabel/2, -xLabel*0.15, bidi_text)
         pdf.save()
         f1 = PdfFileReader(open(fileName, 'rb'))
         merger.append(f1)
