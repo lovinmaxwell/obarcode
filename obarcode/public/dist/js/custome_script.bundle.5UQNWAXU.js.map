@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../apps/obarcode/obarcode/public/js/custom_script/custome_script.bundle.js"],
+  "sourcesContent": ["// import \"./leaflet\";\n// import \"./doctype/item/item_price\";\napps/obarcode/obarcode/public/js/custom_script/doctype/item/item.js\n"],
+  "mappings": "MAEA,KAAK,SAAS,SAAS,OAAO,GAAG,cAAc,QAAQ,KAAK,KAAK",
+  "names": []
+}

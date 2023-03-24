@@ -12,12 +12,12 @@ import urllib.parse
 import time
 from frappe.core.doctype.user.user import STANDARD_USERS
 from frappe.permissions import add_permission, update_permission_property
-from frappe.utils.data import now_datetime
+from frappe.utils.data import fmt_money, now_datetime
 from frappe.utils.logger import set_log_level
 from frappe.utils import cint, cstr, getdate
 from frappe.utils import get_formatted_email
 set_log_level("DEBUG")
-oLogger = frappe.logger("obarcode", allow_site=True, file_count=50)
+oLogger = frappe.logger("obarcode", allow_site=True, file_count=5)
 
 
 def get_attachment_path(dt, dn):
@@ -80,14 +80,43 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     from erpnext import get_default_company
     from obarcode.utils import _now_ms,random_string
     from frappe.utils.file_manager import save_file
-    import arabic_reshaper
+    from arabic_reshaper import ArabicReshaper
+    configuration = {
+        'delete_harakat': False,
+        'support_ligatures': True,
+        'RIAL SIGN': True,  # Replace ر ي ا ل with ﷼
+    }
     from bidi.algorithm import get_display
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.pdfbase import pdfmetrics
 
 
-    pdfmetrics.registerFont(TTFont('Arabic', f'{os.path.dirname(__file__)}/fonts/29ltbukraregular.ttf'))
+    pdfmetrics.registerFont(TTFont('Arabic', f'{os.path.dirname(__file__)}/fonts/qatar2022-arabic-heavy.ttf'))
+    
+    def draw_centered_string(canvas, text, x, y, max_width, font_size=10,fontName='Courier-Bold'):
+        text_width = canvas.stringWidth(text, fontName=fontName, fontSize=font_size)
+        if text_width <= max_width:
+            canvas.setFont(fontName, font_size)
+            canvas.drawCentredString(x, y, text)
+        else:
+            scale_factor = max_width / text_width
+            new_font_size = int(font_size * scale_factor)
+            draw_centered_string(canvas, text, x, y, max_width, new_font_size)
 
+    def draw_centered_arabic_text(canvas, text, x, y, max_width, font_size=10,fontName='Arial', angle = 45):
+        canvas.saveState()  # Save the current state of the canvas
+        canvas.translate(x, y)  # Translate to the specified position
+        canvas.rotate(angle)  # Rotate the canvas around the origin by the specified angle
+        text_width = canvas.stringWidth(text, fontName=fontName, fontSize=font_size)
+        if text_width <= max_width:
+            canvas.setFont(fontName, font_size)
+            canvas.drawCentredString(x, y, text)
+        else:
+            scale_factor = max_width / text_width
+            new_font_size = int(font_size * scale_factor)
+            draw_centered_arabic_text(canvas, text, x, y, max_width, new_font_size)
+            
+        canvas.restoreState()  # Restore the previous state of the canvas
     #init the style sheet
     # styles = getSampleStyleSheet()
     xLabel = float(x)*mm
@@ -119,6 +148,7 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
     # price = product_info.get('price') #formatted_price
 
     # app_logo_url = "/assets/obarcode/fonts/29ltbukraregular.ttf"
+    itemDoc = frappe.get_doc("Item",item_code)
     
     cart_settings = get_shopping_cart_settings()
     price = get_price(
@@ -126,10 +156,10 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
 			)
     
     # oLogger.debug(product_info)
-    # oLogger.debug(price)
+    oLogger.debug(price)
     
     if price:
-        item_rate =  price.get('formatted_price')
+        item_rate =  f"{fmt_money(price.get('price_list_rate'))} {price.get('currency')}"
         # oLogger.debug(item_rate)
     
 
@@ -153,12 +183,27 @@ def generate_item_barcode(dt,dn,item_code,item_name,item_rate,item_barcode,qty=1
         d.add(barcode_eanbc13)
         # d.drawOn(pdf, xLabel*0.20, yLabel*0.20)
         d.drawOn(pdf, barcodeDrawOnX, barcodeDrawOnY)
-        pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
-        pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
+        # pdf.drawCentredString(xLabel/2, yLabel*0.85, company_name)
+        draw_centered_string(pdf, company_name, xLabel/2, yLabel*0.85, xLabel, fontSize, "Arabic")        
+        # pdf.drawCentredString(xLabel/2, yLabel*0.10, item_name)
+        draw_centered_string(pdf, item_name, xLabel/2, yLabel*0.15, xLabel, fontSize, "Arabic")        
+
+        # draw_centered_string(pdf, "This is a very long string that will be automatically scaled down to fit within the canvas width", 300, 400, 400, 16)
+        # text_width = pdf.stringWidth(item_name, fontSize=fontSize)
+        # oLogger.debug(f"text_width : {text_width}")
+        # oLogger.debug(f"xLabel : {xLabel}")
+        # oLogger.debug(f"yLabel : {yLabel}")
+        # oLogger.debug(f'fontSize - {fontSize}')
+        reshaper = ArabicReshaper(configuration=configuration)
+        if(itemDoc.get('item_name_ar')):
+            reshaped_text = reshaper.reshape(itemDoc.get('item_name_ar'))
+            draw_centered_string(pdf, reshaped_text[::-1], xLabel/2, yLabel*0.05, xLabel, fontSize - 2,"Arabic")
+        
+        reshaped_text = reshaper.reshape(item_rate)
+        # rehaped_text = arabic_reshaper.reshape(item_rate)
         pdf.rotate(90)
         pdf.setFont("Arabic", fontSize-1)
-        rehaped_text = arabic_reshaper.reshape(item_rate)
-        bidi_text = get_display(rehaped_text)
+        bidi_text = get_display(reshaped_text)
         pdf.drawCentredString(yLabel*0.60, -xLabel*0.10, bidi_text)
         pdf.save()
         f1 = PdfFileReader(open(fileName, 'rb'))
